@@ -5,6 +5,7 @@ const cors = require('cors');
 const sequelize = require('./config/database');
 const config = require('./config/config');
 const userRoutes = require('./routes/userRoutes');
+const eventRoutes = require('./routes/eventRoutes');
 
 // Initialize express app
 const app = express();
@@ -16,6 +17,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api/users', userRoutes);
+app.use('/api/events', eventRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
