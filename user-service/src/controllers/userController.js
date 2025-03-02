@@ -2,6 +2,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const config = require('../config/config');
+const notificationService = require('../services/notificationService');
 
 // Create JWT token
 const generateToken = (user) => {
@@ -30,6 +31,14 @@ exports.register = async (req, res) => {
       password,
       firstName,
       lastName
+    });
+
+    await notificationService.sendNotification({
+      user_id: user.id,
+      name: `${user.firstName} ${user.lastName}`,
+      email: user.email,
+      action: 'REGISTRATION',
+      timestamp: new Date().toISOString()
     });
 
     // Generate token
@@ -130,6 +139,13 @@ exports.updateProfile = async (req, res) => {
     if (bio) user.bio = bio;
 
     await user.save();
+    await notificationService.sendNotification({
+      user_id: user.id,
+      name: `${user.firstName} ${user.lastName}`,
+      email: user.email,
+      action: 'PROFILE_UPDATE',
+      timestamp: new Date().toISOString()
+    });
 
     res.status(200).json({
       message: 'Profile updated successfully',

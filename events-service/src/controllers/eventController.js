@@ -1,5 +1,6 @@
 // src/controllers/eventController.js
 const Event = require('../models/Event');
+const notificationService = require('../services/notificationService');
 
 // Get all events
 exports.getAllEvents = async (req, res) => {
@@ -50,6 +51,16 @@ exports.updateEvent = async (req, res) => {
     if (!event) {
       return res.status(404).json({ success: false, message: 'Event not found' });
     }
+
+    await notificationService.sendNotification({
+      event_id: event._id,
+      event_title: event.title,
+      event_date: event.date,
+      event_location: event.location,
+      action: 'EVENT_UPDATED',
+      message: 'Event details have been updated',
+      timestamp: new Date().toISOString()
+    });
     
     res.status(200).json({ success: true, data: event });
   } catch (error) {
