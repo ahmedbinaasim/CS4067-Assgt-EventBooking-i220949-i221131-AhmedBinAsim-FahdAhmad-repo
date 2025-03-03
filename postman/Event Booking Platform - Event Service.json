@@ -1,0 +1,270 @@
+{
+	"info": {
+		"_postman_id": "ace5fab5-9f8c-42b4-8d95-a7250ca1eb46",
+		"name": "Event Booking Platform - Event Service",
+		"description": "This is a PostMan configuration to test all apis developed in the events microservice for the Event Booking Platform. This microservice uses Node and MongoDB for its backend.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36611876"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{eventBaseUrl}}/health",
+					"host": [
+						"{{eventBaseUrl}}"
+					],
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Event",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"if (jsonData.success && jsonData.data._id) {\r",
+							"    pm.environment.set(\"eventId\", jsonData.data._id);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"title\": \"Tech Conference 2025\",\r\n  \"description\": \"Annual technology conference with keynotes and workshops\",\r\n  \"date\": \"2025-06-15\",\r\n  \"time\": \"09:00 AM\",\r\n  \"location\": \"Convention Center, Downtown\",\r\n  \"category\": \"Conference\",\r\n  \"organizer\": \"Tech Association\",\r\n  \"price\": 199.99,\r\n  \"currency\": \"USD\",\r\n  \"totalTickets\": 500,\r\n  \"availableTickets\": 500,\r\n  \"tags\": [\"technology\", \"innovation\", \"networking\"]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{eventBaseUrl}}/api/events",
+					"host": [
+						"{{eventBaseUrl}}"
+					],
+					"path": [
+						"api",
+						"events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Events",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{eventBaseUrl}}/api/events",
+					"host": [
+						"{{eventBaseUrl}}"
+					],
+					"path": [
+						"api",
+						"events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Event By ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{eventBaseUrl}}/api/events/{{eventId}}",
+					"host": [
+						"{{eventBaseUrl}}"
+					],
+					"path": [
+						"api",
+						"events",
+						"{{eventId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Event",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"price\": 149.99,\r\n  \"description\": \"Updated description for the tech conference\",\r\n  \"availableTickets\": 450\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{eventBaseUrl}}/api/events/{{eventId}}",
+					"host": [
+						"{{eventBaseUrl}}"
+					],
+					"path": [
+						"api",
+						"events",
+						"{{eventId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check Availability",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{eventBaseUrl}}/api/events/{{eventId}}/availability?tickets=5",
+					"host": [
+						"{{eventBaseUrl}}"
+					],
+					"path": [
+						"api",
+						"events",
+						"{{eventId}}",
+						"availability"
+					],
+					"query": [
+						{
+							"key": "tickets",
+							"value": "5"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Book Tickets",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"tickets\": 5\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{eventBaseUrl}}/api/events/{{eventId}}/book",
+					"host": [
+						"{{eventBaseUrl}}"
+					],
+					"path": [
+						"api",
+						"events",
+						"{{eventId}}",
+						"book"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search Events",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{eventBaseUrl}}/api/events/search?title=tech&category=Conference",
+					"host": [
+						"{{eventBaseUrl}}"
+					],
+					"path": [
+						"api",
+						"events",
+						"search"
+					],
+					"query": [
+						{
+							"key": "title",
+							"value": "tech"
+						},
+						{
+							"key": "category",
+							"value": "Conference"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Event",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{eventBaseUrl}}/api/events/{{eventId}}",
+					"host": [
+						"{{eventBaseUrl}}"
+					],
+					"path": [
+						"api",
+						"events",
+						"{{eventId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "eventId",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

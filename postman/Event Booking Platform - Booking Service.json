@@ -1,0 +1,150 @@
+{
+	"info": {
+		"_postman_id": "f4ebd1f6-2c5b-4c8a-92df-137d37b0b7ee",
+		"name": "Event Booking Platform - Booking Service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36611876"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{bookingBaseUrl}}/health",
+					"host": [
+						"{{bookingBaseUrl}}"
+					],
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Booking",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"if (jsonData.success && jsonData.booking && jsonData.booking.id) {\r",
+							"    pm.environment.set(\"bookingId\", jsonData.booking.id);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"eventId\": \"{{eventId}}\",\r\n  \"numberOfTickets\": 2,\r\n  \"notes\": \"Special seating requirements\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{bookingBaseUrl}}/api/bookings",
+					"host": [
+						"{{bookingBaseUrl}}"
+					],
+					"path": [
+						"api",
+						"bookings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Bookings",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{bookingBaseUrl}}/api/bookings",
+					"host": [
+						"{{bookingBaseUrl}}"
+					],
+					"path": [
+						"api",
+						"bookings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Booking by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{bookingBaseUrl}}/api/bookings/{{bookingId}}",
+					"host": [
+						"{{bookingBaseUrl}}"
+					],
+					"path": [
+						"api",
+						"bookings",
+						"{{bookingId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cancel Booking",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{bookingBaseUrl}}/api/bookings/{{bookingId}}/cancel",
+					"host": [
+						"{{bookingBaseUrl}}"
+					],
+					"path": [
+						"api",
+						"bookings",
+						"{{bookingId}}",
+						"cancel"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

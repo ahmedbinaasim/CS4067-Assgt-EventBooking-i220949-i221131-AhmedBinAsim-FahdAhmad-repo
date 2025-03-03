@@ -1,79 +1,138 @@
-# Microservices-Based Online Event Booking Platform
+# CS4067 Event Booking Platform
 
-This project implements an online event booking platform using a microservices architecture. It demonstrates synchronous and asynchronous communication between services, integration with different database technologies, and DevOps practices.
+A microservices-based online event booking platform that demonstrates synchronous and asynchronous communication between services.
 
-## Architecture Overview
+## Project Overview
 
-The system consists of four microservices:
+This platform consists of four interconnected microservices:
 
-1. **User Service**: Manages user authentication and profiles (Express.js + SQLite)
-2. **Event Service**: Manages event listings and details (Node.js + MongoDB)
-3. **Booking Service**: Handles ticket bookings and payments (Express.js + SQLite)
-4. **Notification Service**: Sends email notifications (Express.js + MongoDB)
+1. **User Service** - Handles user authentication and profiles
+2. **Event Service** - Manages event listings and details
+3. **Booking Service** - Processes ticket bookings and payments
+4. **Notification Service** - Delivers notifications to users
 
-![Architecture Diagram](docs/architecture-diagram.png)
+The architecture implements both synchronous communication via REST APIs and asynchronous communication through RabbitMQ message queues.
 
-## Communication Patterns
+## Architecture Diagram
 
-### Synchronous Communication (REST API)
-- User Service → Event Service: Users retrieve available events
-- User Service → Booking Service: Users create bookings
-- Booking Service → Event Service: Check event availability before booking
-- Booking Service → Payment Gateway: Process payments
+```
+┌─────────────┐      ┌─────────────┐
+│             │      │             │
+│ User Service│◄────►│Event Service│
+│             │      │             │
+└──────┬──────┘      └──────┬──────┘
+       │                    │
+       │                    │
+       ▼                    ▼
+┌─────────────┐      ┌─────────────┐
+│             │      │             │
+│   Booking   │◄────►│Notification │
+│   Service   │      │   Service   │
+│             │      │             │
+└─────────────┘      └─────────────┘
+       ▲                    ▲
+       │                    │
+       │                    │
+       └─────RabbitMQ───────┘
+```
 
-### Asynchronous Communication (RabbitMQ)
-- Booking Service → Notification Service: Send booking confirmations
-- User Service → Notification Service: Send registration notifications
-- Event Service → Notification Service: Send event update notifications
+## Communication Flow
 
-## Setup Instructions
+- **Synchronous (REST API)**:
+  - User Service → Event Service: Retrieve events
+  - User Service → Booking Service: Create bookings
+  - Booking Service → Event Service: Check availability
+  - Booking Service → Payment Gateway: Process payments
+
+- **Asynchronous (RabbitMQ)**:
+  - User Service → Notification Service: User registration/updates
+  - Event Service → Notification Service: Event updates
+  - Booking Service → Notification Service: Booking confirmations/cancellations
+
+## Tech Stack
+
+- **Backend**: Node.js, Express.js
+- **Databases**: MongoDB (Event & Notification Services), SQLite (User & Booking Services)
+- **Message Broker**: RabbitMQ
+- **Authentication**: JWT (JSON Web Tokens)
+- **Testing**: Postman Collections
+
+## Getting Started
 
 ### Prerequisites
-- Node.js (v14 or higher)
+
+- Node.js (v14+)
+- RabbitMQ server
 - MongoDB
-- RabbitMQ
-- SMTP server access (for email notifications)
+- SQLite
 
 ### Installation
 
-1. Clone the repository
-   ```bash
-   git clone https://github.com/ahmedbinaasim/CS4067-Assgt-EventBooking-i220949-i221131-AhmedBinAsim-FahdAhmad-repo.git
-   cd CS4067-Assgt-EventBooking-i220949-i221131-AhmedBinAsim-FahdAhmad-repo
+1. Clone the repository:
+   ```
+   git clone https://github.com/yourusername/CS4067-Assgt-EventBooking-RollNo-YourName-repo.git
+   cd CS4067-Assgt-EventBooking-RollNo-YourName-repo
+   ```
 
+2. Install dependencies for each service:
+   ```
+   cd user-service && npm install
+   cd ../event-service && npm install
+   cd ../booking-service && npm install
+   cd ../notification-service && npm install
+   ```
 
-### API Documentation
-## User Service
+3. Configure environment variables by creating `.env` files in each service directory based on the provided examples.
 
-POST /api/users/register - Register a new user
-POST /api/users/login - Login and get JWT token
-GET /api/users/profile - Get user profile
-PUT /api/users/profile - Update user profile
-GET /api/events - Get events (proxies to Event Service)
+4. Start the services (in separate terminals):
+   ```
+   cd user-service && npm start
+   cd event-service && npm start
+   cd booking-service && npm start
+   cd notification-service && npm start
+   ```
 
-## Event Service
+## Testing with Postman
 
-GET /api/events - Get all events
-GET /api/events/:id - Get event by ID
-POST /api/events - Create new event
-PUT /api/events/:id - Update event
-DELETE /api/events/:id - Delete event
-GET /api/events/:id/availability - Check ticket availability
-POST /api/events/:id/book - Book tickets
+1. Import the Postman collections from the `postman` directory
+2. Set up the environment variables in Postman
+3. Test the endpoints in the recommended sequence:
+   - User Service endpoints
+   - Event Service endpoints
+   - Booking Service endpoints
+   - Notification Service endpoints
 
-## Booking Service
+## Directory Structure
 
-POST /api/bookings - Create a new booking
-GET /api/bookings - Get all bookings for the authenticated user
-GET /api/bookings/:id - Get booking by ID
-POST /api/bookings/:id/cancel - Cancel a booking
+```
+/CS4067-Assgt-EventBooking-RollNo-YourName-repo
+  /user-service       # User authentication and profile management
+  /event-service      # Event listings and management
+  /booking-service    # Ticket bookings and payment processing
+  /notification-service # Notification delivery system
+  /postman            # Postman collections for testing
+  README.md           # Main project documentation
+```
 
-## Notification Service
+## Documentation
 
-GET /api/notifications - Get all notifications
-GET /api/notifications/stats - Get notification statistics
-GET /api/notifications/:id - Get notification by ID
-GET /api/notifications/recipient/:recipientId - Get notifications by recipient
-GET /api/notifications/type/:type - Get notifications by type
-GET /api/notifications/status/:status - Get notifications by status
-POST /api/notifications - Create a manual notification (for testing)
+Each microservice has its own README with detailed information on:
+- Service architecture and data flow
+- API endpoints with request/response examples
+- Database schema
+- Environment variables
+- Testing instructions
+
+## Project Requirements
+
+This project fulfills the requirements for the CS4067 DevOps and Cloud Native course assignment:
+
+- Microservices architecture with clear separation of concerns
+- Mixture of synchronous and asynchronous communication
+- MongoDB and SQLite integration for data storage
+- RabbitMQ for messaging between services
+- Proper error handling and logging
+
+## License
+
+[MIT License](LICENSE)

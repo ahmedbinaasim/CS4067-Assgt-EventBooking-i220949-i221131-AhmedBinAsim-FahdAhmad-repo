@@ -1,0 +1,134 @@
+{
+	"info": {
+		"_postman_id": "687b34ed-c5a8-45ab-8507-036e9735c84e",
+		"name": "Event Booking Platform - Notifications Service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36611876"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{notificationBaseUrl}}/health",
+					"host": [
+						"{{notificationBaseUrl}}"
+					],
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Notifications",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{notificationBaseUrl}}/api/notifications",
+					"host": [
+						"{{notificationBaseUrl}}"
+					],
+					"path": [
+						"api",
+						"notifications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Notification Stats",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{notificationBaseUrl}}/api/notifications/stats",
+					"host": [
+						"{{notificationBaseUrl}}"
+					],
+					"path": [
+						"api",
+						"notifications",
+						"stats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Notifications By Type",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{notificationBaseUrl}}/api/notifications/type/BOOKING",
+					"host": [
+						"{{notificationBaseUrl}}"
+					],
+					"path": [
+						"api",
+						"notifications",
+						"type",
+						"BOOKING"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Notifications By Status",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{notificationBaseUrl}}/api/notifications/status/SENT",
+					"host": [
+						"{{notificationBaseUrl}}"
+					],
+					"path": [
+						"api",
+						"notifications",
+						"status",
+						"SENT"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Test Notification",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"type\": \"BOOKING\",\r\n  \"recipientEmail\": \"test@example.com\",\r\n  \"recipientId\": \"user123\",\r\n  \"subject\": \"Test Notification\",\r\n  \"content\": \"This is a test notification\",\r\n  \"relatedId\": \"booking123\",\r\n  \"relatedTitle\": \"Test Event\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{notificationBaseUrl}}/api/notifications",
+					"host": [
+						"{{notificationBaseUrl}}"
+					],
+					"path": [
+						"api",
+						"notifications"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
