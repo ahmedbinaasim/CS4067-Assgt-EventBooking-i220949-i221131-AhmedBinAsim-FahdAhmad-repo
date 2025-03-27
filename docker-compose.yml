@@ -1,0 +1,145 @@
+version: '3.8'
+
+services:
+  # MongoDB for Event and Notification services
+  mongodb:
+    image: mongo:6.0
+    container_name: event-booking-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    networks:
+      - event-booking-network
+
+  # RabbitMQ for asynchronous communication
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: event-booking-rabbitmq
+    ports:
+      - "5672:5672"  # AMQP protocol port
+      - "15672:15672"  # Management UI port
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=password
+    networks:
+      - event-booking-network
+
+  # User Service
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    container_name: event-booking-user-service
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - DB_PATH=/app/data/user.sqlite
+      - JWT_SECRET=your_jwt_secret
+      - RABBITMQ_URL=amqp://admin:password@rabbitmq:5672
+    volumes:
+      - user_service_data:/app/data
+    depends_on:
+      - rabbitmq
+    networks:
+      - event-booking-network
+
+  # Event Service
+  event-service:
+    build:
+      context: ./event-service
+      dockerfile: Dockerfile
+    container_name: event-booking-event-service
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=production
+      - PORT=3002
+      - MONGODB_URI=mongodb://admin:password@mongodb:27017/events?authSource=admin
+      - RABBITMQ_URL=amqp://admin:password@rabbitmq:5672
+    depends_on:
+      - mongodb
+      - rabbitmq
+    networks:
+      - event-booking-network
+
+  # Booking Service
+  booking-service:
+    build:
+      context: ./booking-service
+      dockerfile: Dockerfile
+    container_name: event-booking-booking-service
+    ports:
+      - "3003:3003"
+    environment:
+      - NODE_ENV=production
+      - PORT=3003
+      - DB_PATH=/app/data/booking.sqlite
+      - EVENT_SERVICE_URL=http://event-service:3002
+      - USER_SERVICE_URL=http://user-service:3001
+      - RABBITMQ_URL=amqp://admin:password@rabbitmq:5672
+    volumes:
+      - booking_service_data:/app/data
+    depends_on:
+      - user-service
+      - event-service
+      - rabbitmq
+    networks:
+      - event-booking-network
+
+  # Notification Service
+  notification-service:
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile
+    container_name: event-booking-notification-service
+    ports:
+      - "3004:3004"
+    environment:
+      - NODE_ENV=production
+      - PORT=3004
+      - MONGODB_URI=mongodb://admin:password@mongodb:27017/notifications?authSource=admin
+      - RABBITMQ_URL=amqp://admin:password@rabbitmq:5672
+    depends_on:
+      - mongodb
+      - rabbitmq
+    networks:
+      - event-booking-network
+
+  # Frontend Service
+  frontend-service:
+    build:
+      context: ./frontend-service
+      dockerfile: Dockerfile
+    container_name: event-booking-frontend-service
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - REACT_APP_API_BASE_URL=http://localhost
+      - REACT_APP_USER_SERVICE_PORT=3001
+      - REACT_APP_EVENT_SERVICE_PORT=3002
+      - REACT_APP_BOOKING_SERVICE_PORT=3003
+    depends_on:
+      - user-service
+      - event-service
+      - booking-service
+      - notification-service
+    networks:
+      - event-booking-network
+
+# Define volumes for persistent data
+volumes:
+  mongodb_data:
+  user_service_data:
+  booking_service_data:
+
+# Define network for service communication
+networks:
+  event-booking-network:
+    driver: bridge

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: OnlineEventBookingAhmed  # Replace with your actual name
+data:
+  mongodb-events-uri: "mongodb://admin:${MONGODB_PASSWORD}@mongodb:27017/events?authSource=admin"
+  mongodb-notifications-uri: "mongodb://admin:${MONGODB_PASSWORD}@mongodb:27017/notifications?authSource=admin"
+  rabbitmq-url: "amqp://admin:${RABBITMQ_PASSWORD}@rabbitmq:5672"
+  user-service-url: "http://user-service:3001"
+  event-service-url: "http://event-service:3002"
+  booking-service-url: "http://booking-service:3003"
+  notification-service-url: "http://notification-service:3004"

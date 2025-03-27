@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: booking-service
+  namespace: OnlineEventBookingYourName  # Replace with your actual name
+  labels:
+    app: booking-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: booking-service
+  template:
+    metadata:
+      labels:
+        app: booking-service
+    spec:
+      containers:
+        - name: booking-service
+          image: event-booking-booking-service:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3003
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: PORT
+              value: "3003"
+            - name: DB_PATH
+              value: "/app/data/booking.sqlite"
+            - name: EVENT_SERVICE_URL
+              value: "http://event-service:3002"
+            - name: USER_SERVICE_URL
+              value: "http://user-service:3001"
+            - name: RABBITMQ_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: rabbitmq-url
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+          volumeMounts:
+            - name: booking-data
+              mountPath: /app/data
+      volumes:
+        - name: booking-data
+          persistentVolumeClaim:
+            claimName: booking-data-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: booking-service
+  namespace: OnlineEventBookingYourName  # Replace with your actual name
+spec:
+  selector:
+    app: booking-service
+  ports:
+    - port: 3003
+      targetPort: 3003
+  type: ClusterIP
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: booking-data-pvc
+  namespace: OnlineEventBookingYourName  # Replace with your actual name
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

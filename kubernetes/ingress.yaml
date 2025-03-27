@@ -1,0 +1,48 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: event-booking-ingress
+  namespace: OnlineEventBookingYourName  # Replace with your actual name
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    # Uncomment for TLS (optional)
+    # nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  # Uncomment for TLS (optional)
+  # tls:
+  # - hosts:
+  #   - event-booking.local
+  #   secretName: event-booking-tls
+  rules:
+  - host: event-booking.local  # You'll need to add this to your hosts file
+    http:
+      paths:
+      # No frontend service, so we'll make the API endpoints the main paths
+      - path: /api/users(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: user-service
+            port:
+              number: 3001
+      - path: /api/events(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: event-service
+            port:
+              number: 3002
+      - path: /api/bookings(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: booking-service
+            port:
+              number: 3003
+      - path: /api/notifications(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: notification-service
+            port:
+              number: 3004
