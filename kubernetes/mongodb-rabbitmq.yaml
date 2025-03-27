@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mongodb
-  namespace: OnlineEventBookingYourName  # Replace with your actual name
+  namespace: ahmed-event-booking  # Replace with your actual name
 spec:
   replicas: 1
   selector:
