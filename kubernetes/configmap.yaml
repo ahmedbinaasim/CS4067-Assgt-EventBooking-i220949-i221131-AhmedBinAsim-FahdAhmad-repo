@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: app-config
-  namespace: fahd-event-booking  # Replace with your actual name
+  namespace: ahmed-event-booking  # Replace with your actual name
 data:
   mongodb-events-uri: "mongodb://admin:${MONGODB_PASSWORD}@mongodb:27017/events?authSource=admin"
   mongodb-notifications-uri: "mongodb://admin:${MONGODB_PASSWORD}@mongodb:27017/notifications?authSource=admin"

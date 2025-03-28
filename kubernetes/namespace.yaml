@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: fahd-event-booking  # Replace with your actual name
+  name: ahmed-event-booking  # Replace with your actual name
   labels:
     name: event-booking
     app: event-booking-platform

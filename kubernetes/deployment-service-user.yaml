@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: user-service
-  namespace: fahd-event-booking  # Replace with your actual name
+  namespace: ahmed-event-booking  # Replace with your actual name
   labels:
     app: user-service
 spec:
@@ -57,7 +57,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: user-service
-  namespace: fahd-event-booking  # Replace with your actual name
+  namespace: ahmed-event-booking  # Replace with your actual name
 spec:
   selector:
     app: user-service
@@ -70,7 +70,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: user-data-pvc
-  namespace: fahd-event-booking  # Replace with your actual name
+  namespace: ahmed-event-booking  # Replace with your actual name
 spec:
   accessModes:
     - ReadWriteOnce
