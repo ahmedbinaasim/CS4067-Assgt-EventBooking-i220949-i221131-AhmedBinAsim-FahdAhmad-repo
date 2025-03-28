@@ -2,7 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: event-booking-ingress
-  namespace: ahmed-event-booking  # Replace with your actual name
+  namespace: fahd-event-booking  # Replace with your actual name
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$1
     # Uncomment for TLS (optional)
