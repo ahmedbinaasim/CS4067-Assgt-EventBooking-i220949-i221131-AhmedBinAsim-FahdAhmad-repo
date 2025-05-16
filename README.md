@@ -13,7 +13,7 @@ This platform consists of four interconnected microservices:
 
 The architecture implements both synchronous communication via REST APIs and asynchronous communication through RabbitMQ message queues.
 
-## Architecture Diagram
+## Architecture-Diagram
 
 ```
 ┌─────────────┐      ┌─────────────┐
